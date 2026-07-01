@@ -1,5 +1,6 @@
 package org.example.springdatajpa.service.impl;
 
+import jakarta.transaction.Transactional;
 import org.example.springdatajpa.dto.StudentDTO;
 import org.example.springdatajpa.entity.Student;
 import org.example.springdatajpa.repository.StudentRepository;
@@ -34,6 +35,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public StudentDTO createStudent(StudentDTO student) {
+        System.out.println("Repository is created using proxy "+ studentRepository.getClass().getName());
         Student studentEntity = toStudent(student);
         studentEntity.setId(UUID.randomUUID().toString()); // Explicitly set a new ID for creation
         Student savedStudent = studentRepository.save(studentEntity);
@@ -41,6 +43,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    @Transactional
     public StudentDTO updateStudent(String id, StudentDTO student) {
         return studentRepository.findById(id)
                 .map(existingStudent -> {

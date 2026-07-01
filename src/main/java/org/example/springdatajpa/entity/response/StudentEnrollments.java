@@ -1,22 +1,23 @@
-package org.example.springdatajpa.dto;
+package org.example.springdatajpa.entity.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.springdatajpa.entity.Course;
 import org.example.springdatajpa.entity.Enrollment;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder(toBuilder = true)
-@AllArgsConstructor
 @NoArgsConstructor
-public class StudentDTO {
-    private String id;
+@AllArgsConstructor
+public class StudentEnrollments {
+    private String studentId;
     private String firstName;
     private String lastName;
-    private String email;
+    private List<CourseDTO> enrollments;
 
-    private List<Enrollment> enrollments;
 }

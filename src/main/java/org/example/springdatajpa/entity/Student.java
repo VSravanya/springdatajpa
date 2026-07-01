@@ -1,13 +1,9 @@
 package org.example.springdatajpa.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -20,4 +16,8 @@ public class Student {
     private String firstName;
     private String lastName;
     private String email;
+
+    @OneToMany(mappedBy = "student")
+    @ToString.Exclude
+    private List<Enrollment> enrollmentList;
 }
