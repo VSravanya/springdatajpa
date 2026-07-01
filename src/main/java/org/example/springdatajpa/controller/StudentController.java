@@ -1,12 +1,20 @@
 package org.example.springdatajpa.controller;
 
 import org.example.springdatajpa.dto.StudentDTO;
+import org.example.springdatajpa.entity.Enrollment;
+import org.example.springdatajpa.entity.Student;
+import org.example.springdatajpa.entity.keys.EnrollmentKey;
+import org.example.springdatajpa.entity.request.EnrollmentRequest;
+import org.example.springdatajpa.entity.response.EnrollmentResponse;
+import org.example.springdatajpa.entity.response.StudentEnrollments;
+import org.example.springdatajpa.service.EnrollmentService;
 import org.example.springdatajpa.service.StudentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -14,8 +22,13 @@ import java.util.List;
 public class StudentController {
 
     private final StudentService studentService;
-    public StudentController(StudentService studentService){
+    private final EnrollmentService enrollmentService;
+    public StudentController(
+            StudentService studentService,
+            EnrollmentService enrollmentService
+    ){
         this.studentService = studentService;
+        this.enrollmentService = enrollmentService;
     }
 
     @GetMapping("/{id}")
@@ -57,5 +70,37 @@ public class StudentController {
     public ResponseEntity<Void> deleteStudent(@PathVariable String id) {
         studentService.deleteStudent(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{studentId}/enroll")
+    public ResponseEntity<EnrollmentResponse> enrollInCourse(
+            @PathVariable String studentId,
+            @RequestBody EnrollmentRequest request){
+        Enrollment prepareEnrollment = Enrollment.builder()
+                .enrollmentId(
+                        EnrollmentKey.builder()
+                                .studentId(studentId)
+                                .courseId(request.getCourseId())
+                        .build()
+                )
+                .enrollmentDate(LocalDate.now())
+                .build();
+        Enrollment savedEnrollment = enrollmentService.createEnrollment(prepareEnrollment);
+        EnrollmentResponse response = EnrollmentResponse
+                .builder()
+                .studentId(savedEnrollment.getStudent().getId())
+                .studentName(savedEnrollment.getStudent().getFirstName())
+                .courseId(savedEnrollment.getCourse().getCourseId())
+                .enrolledDate(savedEnrollment.getEnrollmentDate())
+                .build();
+        return ResponseEntity.ok(response);
+
+    }
+
+    @GetMapping("/{studentId}/enrollments")
+    public ResponseEntity<StudentEnrollments> studentEnrollments(
+            @PathVariable String studentId
+    ){
+        return ResponseEntity.ok(enrollmentService.getStudentEnrollments(studentId));
     }
 }

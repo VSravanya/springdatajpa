@@ -1,22 +1,21 @@
-package org.example.springdatajpa.dto;
+package org.example.springdatajpa.entity.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.example.springdatajpa.entity.Enrollment;
 
-import java.util.List;
+import java.time.LocalDate;
 
 @Data
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class StudentDTO {
+public class EnrollmentDTO {
     private String id;
     private String firstName;
     private String lastName;
-    private String email;
-
-    private List<Enrollment> enrollments;
+    private String courseName;
+    private int credits;
+    private LocalDate enrollmentDate;
 }
